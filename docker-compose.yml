@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  robot-api:
+    image: ghcr.io/francescodelduchetto/cmp9134_2526_robotsim:latest
+    ports:
+      - "5000:5000"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - robot-api
+    environment:
+      - ROBOT_URL=http://robot-api:5000
+      - ROBOT_WS_URL=ws://robot-api:5000/ws/telemetry
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
