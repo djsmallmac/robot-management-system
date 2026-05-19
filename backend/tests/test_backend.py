@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, patch, MagicMock
 from fastapi.testclient import TestClient
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+import httpx
 
 from auth import hash_password, verify_password, create_access_token
 from robot_client import RobotClient
@@ -37,7 +38,7 @@ async def test_get_status_returns_unreachable_on_failure():
     client = RobotClient()
     with patch("robot_client.httpx.AsyncClient") as mock_http:
         mock_http.return_value.__aenter__.return_value.get = AsyncMock(
-            side_effect=Exception("connection refused")
+            side_effect=httpx.ConnectError("connection refused")
         )
         result = await client.get_status()
     assert result.get("status") == "UNREACHABLE" or "error" in result
