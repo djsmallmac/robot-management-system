@@ -1,11 +1,6 @@
 # Robot Management System — CMP9134
 
-A web-based Ground Control Station for the Virtual Robot Simulation.
-
-## Stack
-- **Backend**: FastAPI (Python), SQLite, SQLAlchemy
-- **Frontend**: React (Vite)
-- **Containerisation**: Docker + docker-compose
+A web-based Control Station for the Virtual Robot Simulation.
 
 ## Quick start
 
@@ -20,11 +15,6 @@ Then open http://localhost:3000
 - The frontend subscribes to live telemetry and sends move commands via the backend
 - All commands are logged to SQLite for auditing
 - Users have a `viewer` (read-only) or `commander` (can move robot) role
-
-## Design patterns used
-- **Singleton** — `RobotClient` (one shared HTTP client)
-- **Observer** — WebSocket bridge re-broadcasts telemetry to all connected frontends
-- **Factory** — `CommandLog` entries created uniformly via `log_command()`
 
 ## Running tests
 
