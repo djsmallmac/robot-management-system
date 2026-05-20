@@ -11,7 +11,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 class RegisterRequest(BaseModel):
     username: str
     password: str
-    role: str = "viewer"  # default to viewer; set "commander" manually or via admin
+    role: str = "viewer"  # default to viewer set "commander" manually or via admin
 
 
 @router.post("/register")

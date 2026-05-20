@@ -6,10 +6,7 @@ ROBOT_BASE = os.getenv("ROBOT_URL", "http://localhost:5000")
 
 
 class RobotClient:
-    """
-    Singleton client for the Virtual Robot REST API.
-    Handles retries and graceful degradation on 503 outages.
-    """
+    #Singleton for REST API handles retries and degradation aswell
     _instance = None
 
     @classmethod
@@ -19,7 +16,6 @@ class RobotClient:
         return cls._instance
 
     async def _get(self, path: str, retries: int = 5) -> dict:
-        """GET with exponential backoff. Returns error dict on total failure."""
         for attempt in range(retries):
             try:
                 async with httpx.AsyncClient(timeout=5.0) as client:
@@ -36,7 +32,6 @@ class RobotClient:
         return {"error": "unreachable", "status": "UNREACHABLE"}
 
     async def _post(self, path: str, payload: dict, retries: int = 5) -> dict:
-        """POST with exponential backoff."""
         for attempt in range(retries):
             try:
                 async with httpx.AsyncClient(timeout=5.0) as client:

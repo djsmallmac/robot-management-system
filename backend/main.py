@@ -21,8 +21,8 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(robot_router)
 
-# --- WebSocket bridge (Observer pattern) ---
-# All connected frontend clients
+#Websocket bvridge using the observer pattern
+#all connected frontend clients
 _frontend_clients: set[WebSocket] = set()
 
 # Latest telemetry snapshot — new clients get it immediately on connect
@@ -32,17 +32,13 @@ ROBOT_WS_URL = os.getenv("ROBOT_WS_URL", "ws://localhost:5000/ws/telemetry")
 
 
 async def robot_ws_listener():
-    """
-    Background task: subscribes to the robot's WebSocket telemetry feed.
-    Reconnects automatically with exponential backoff on dropout or 503.
-    Acts as the "Subject" in the Observer pattern — broadcasts updates
-    to all registered frontend WebSocket clients.
-    """
+    #subscribes to the robots telemetry feed and reconnects with backoff or 503. This broadcasts all updates to the 
+    #Web socket clients
     backoff = 1
     while True:
         try:
             async with websockets.connect(ROBOT_WS_URL) as ws:
-                backoff = 1  # reset backoff on successful connect
+                backoff = 1  #resets the backoff when connected successfully
                 async for raw in ws:
                     data = json.loads(raw)
                     _latest_telemetry.update(data)
@@ -55,7 +51,7 @@ async def robot_ws_listener():
                             dead.add(client)
                     _frontend_clients.difference_update(dead)
         except Exception:
-            # Robot WS dropped — wait then reconnect
+            #robot WS dropped wait and reconnect
             await asyncio.sleep(backoff)
             backoff = min(backoff * 2, 30)
 
@@ -68,10 +64,10 @@ async def startup():
 
 @app.websocket("/ws/telemetry")
 async def frontend_telemetry(websocket: WebSocket):
-    """Frontend clients connect here to receive live telemetry."""
+    #frontend connects here to recieve li9ve telemetry
     await websocket.accept()
     _frontend_clients.add(websocket)
-    # Send latest snapshot immediately so the UI isn't blank
+    #send latest snapshot
     if _latest_telemetry:
         await websocket.send_json(_latest_telemetry)
     try:

@@ -9,7 +9,7 @@ from auth import hash_password, verify_password, create_access_token
 from robot_client import RobotClient
 
 
-# --- Auth unit tests ---
+#auth unit tests
 
 def test_password_hashing():
     hashed = hash_password("mysecretpassword")
@@ -24,7 +24,7 @@ def test_token_contains_username():
     assert payload["sub"] == "testuser"
 
 
-# --- RobotClient unit tests ---
+#Robot client unit tests
 
 @pytest.mark.asyncio
 async def test_robot_client_singleton():
@@ -75,7 +75,7 @@ async def test_viewer_cannot_move():
     assert r.status_code == 403
 
 
-# --- Integration test ---
+#integration tests
 
 def test_register_and_login():
     from main import app
