@@ -20,7 +20,8 @@ def test_password_hashing():
 def test_token_contains_username():
     token = create_access_token({"sub": "testuser"})
     from jose import jwt
-    payload = jwt.decode(token, "changeme-in-production-use-env-var", algorithms=["HS256"])
+    from auth import SECRET_KEY
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
     assert payload["sub"] == "testuser"
 
 
